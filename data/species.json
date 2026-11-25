@@ -1,0 +1,39 @@
+{
+  "species": [
+    {"key": "dog", "name": "狗", "keywords": ["狗", "犬", "dog", "金毛", "柯基", "泰迪", "柴犬", "边牧"],
+     "months_to_adult": 12, "senior_years": 8},
+    {"key": "cat", "name": "猫", "keywords": ["猫", "cat", "英短", "布偶", "狸花", "橘猫"],
+     "months_to_adult": 12, "senior_years": 10}
+  ],
+  "stages": [
+    {"key": "puppy", "name": "幼年(断奶–4月)", "factor": 3.0, "meals": 4},
+    {"key": "junior", "name": "成长(4–12月)", "factor": 2.2, "meals": 3},
+    {"key": "adult_neutered", "name": "成体已绝育", "factor": 1.6, "meals": 2},
+    {"key": "adult_intact", "name": "成体未绝育", "factor": 1.8, "meals": 2},
+    {"key": "senior", "name": "老年", "factor": 1.4, "meals": 2},
+    {"key": "diet", "name": "减重期", "factor": 0.8, "meals": 2}
+  ],
+  "foods": [
+    {"key": "dry", "name": "干粮", "kcal_per_100g": 360},
+    {"key": "wet", "name": "主食湿粮", "kcal_per_100g": 95},
+    {"key": "homemade", "name": "自制熟食", "kcal_per_100g": 130},
+    {"key": "raw", "name": "生骨肉", "kcal_per_100g": 150}
+  ],
+  "vaccines": [
+    {"key": "core", "name": "核心疫苗(犬四联/猫三联)", "puppy_doses": 3, "puppy_age_weeks": [6, 10, 14], "booster_months": 12},
+    {"key": "rabies", "name": "狂犬疫苗", "puppy_doses": 1, "puppy_age_weeks": [16], "booster_months": 12},
+    {"key": "deworm", "name": "体内外驱虫", "puppy_doses": 0, "puppy_age_weeks": [], "booster_months": 3},
+    {"key": "checkup", "name": "年度体检", "puppy_doses": 0, "puppy_age_weeks": [], "booster_months": 12}
+  ],
+  "symptoms": [
+    {"level": "立即就医", "color": "red", "name": "红旗症状",
+     "items": ["呼吸困难", "抽搐", "吐血", "便血", "尿闭", "尿不出", "中毒", "误食", "车祸", "坠楼",
+               "昏迷", "站不起来", "肚子胀", "胃扭转", "体温40", "高烧", "持续呕吐", "惨叫"]},
+    {"level": "24 小时内", "color": "amber", "name": "需要尽快看",
+     "items": ["呕吐", "吐了", "拉稀", "软便", "不吃", "食欲下降", "打喷嚏", "咳嗽", "眼屎", "跛行", "瘸",
+               "挠耳朵", "频繁舔", "掉毛", "喝水多", "排尿多"]},
+    {"level": "先观察", "color": "green", "name": "可先在家观察",
+     "items": ["偶尔挠", "换毛", "轻微口臭", "挑食", "打嗝", "放屁", "偶尔打喷嚏", "轻微泪痕"]}
+  ],
+  "red_flags": ["尿闭", "尿不出", "呼吸困难", "抽搐", "吐血", "便血", "误食", "中毒", "车祸", "坠楼", "昏迷", "肚子胀"]
+}
