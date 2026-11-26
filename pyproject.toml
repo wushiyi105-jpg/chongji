@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "chongji"
 version = "0.1.0"
-description = "宠物养护 Agent —— 喂食量、疫苗到期、体重曲线、症状分级"
+description = "宠记 · 宠物照护 · 喂食量、疫苗到期、体重曲线、症状分级"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 

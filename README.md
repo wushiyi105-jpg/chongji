@@ -41,7 +41,7 @@ docker build -t chongji .
 docker run -p 8000:8000 chongji
 ```
 
-## 🤔 为什么不能直接问通用大模型
+## 🤔 为什么不用通用大模型直接问
 
 通用模型会说「按体重 2%–3% 喂」,或者「建议观察」。它算不出你家这只猫今天该吃多少克,也不该替兽医做诊断。差别在四点:
 
@@ -106,7 +106,7 @@ python -m chongji --json care --text "..."
 python -m chongji --mock care --text "..."
 ```
 
-## 🔌 模型配置
+## 🔌 模型接入
 
 兼容 **OpenAI `/chat/completions`** 的任意服务:
 
@@ -185,6 +185,6 @@ python -m unittest discover tests -v
 
 shiyi · GitHub [@wushiyi105-jpg](https://github.com/wushiyi105-jpg) · [wushiyi105@gmail.com](mailto:wushiyi105@gmail.com)
 
-## 📄 许可
+## 📄 License
 
 [MIT](./LICENSE)
