@@ -169,7 +169,11 @@ chongji/
 │   ├── cli.py      # care / foods / symptoms / history / web
 │   └── web.py      # single page + JSON API
 ├── data/species.json  # 2 species + 6 stages + 4 foods + 4 items + 3 tiers
-├── tests/test_chongji.py
+├── examples/ (4 raw descriptions + cases.json)
+│   └── out/ (matching CLI output)
+├── tests/test_chongji.py      # 35 unit
+├── tests/test_integration.py  # 20 integration
+├── docs/regression-map.md     # issue -> test names
 └── assets/demo.gif
 ```
 
@@ -179,11 +183,11 @@ chongji/
 python -m unittest discover tests -v
 ```
 
-35 tests cover local logic only: species and weight units, three age formats, six stages, RER/DER, dry vs wet grams, weight gain and loss, red/amber/green triage, vaccine dates, checklist, offline pipeline and unit stripping. CI runs them on 3.10/3.11/3.12.
+55 tests in two layers. 35 unit tests cover local logic only: species and weight units, three age formats, six stages, RER/DER, dry vs wet grams, weight gain and loss, red/amber/green triage, vaccine dates, checklist, offline pipeline and unit stripping. 20 integration tests start a real ThreadingHTTPServer, drive `python -m chongji` as a subprocess and pin the four bugs fixed in this version (see docs/regression-map.md). CI runs them on 3.10/3.11/3.12; `v*` tags also push a multi-arch GHCR image.
 
 ## 👤 Author
 
-shiyi · GitHub [@wushiyi105-jpg](https://github.com/wushiyi105-jpg) · [wushiyi105@gmail.com](mailto:wushiyi105@gmail.com)
+Xiao Mi · 17612850106
 
 ## 📄 License
 

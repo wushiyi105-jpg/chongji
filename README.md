@@ -58,6 +58,23 @@ docker run -p 8000:8000 chongji
 - **体重掉了**:上次 4.5 kg 现在 4.2 kg,掉秤 6.7% 直接报警,并列出要查的方向。
 - **半夜不确定**:先分级,红旗立刻走,非红旗记录时间线,第二天带清单去面诊。
 
+## 📂 真实示例
+
+`examples/` 里是照抄未改的原始描述(养猫群提问、问诊口述、复诊微信、值班电话),`examples/out/` 是对应的 CLI 实跑输出。想自己复跑:
+
+```bash
+for f in examples/case-*.txt; do python -m chongji --mock care --file "$f"; done
+```
+
+| 描述 | 输入 | 输出 | 结论 |
+| --- | --- | --- | --- |
+| 英短 2岁3个月 4.2kg 已绝育,偶尔吐毛球 | [case-01](examples/case-01.txt) | [case-01.md](examples/out/case-01.md) | 成体已绝育,每日 91 g;症状先观察 |
+| 金毛 3个月 8.5kg,拉稀一天四次 | [case-02](examples/case-02.txt) | [case-02.md](examples/out/case-02.md) | 幼年 ×3.0,每日 290 g;24 小时内面诊 |
+| 柯基 上次 14.6kg 今天 13.4kg | [case-03](examples/case-03.txt) | [case-03.md](examples/out/case-03.md) | 掉秤 8.2% 报警,要查牙口与消化 |
+| 猫 5.1kg 尿不出,一直蹲猫砂盆 | [case-04](examples/case-04.txt) | [case-04.md](examples/out/case-04.md) | 红旗,立即就医,别在家观察 |
+
+这四个文件同时也是回归夹具:每一条都对应过至少一个真 bug(#6 月龄叠加、#7 上次体重、#8 克数一致、#9 吐毛球分级),映射见 [docs/regression-map.md](docs/regression-map.md)。
+
 ## 🗺 Roadmap
 
 - **体况评分(BCS)**:按品种与骨架给 1–9 分,替代单一 BMI 式判断。
@@ -169,7 +186,12 @@ chongji/
 │   ├── cli.py      # care / foods / symptoms / history / web
 │   └── web.py      # 单页 + JSON API
 ├── data/species.json  # 2 物种 + 6 阶段 + 4 食物 + 4 免疫项 + 3 级症状
-├── tests/test_chongji.py
+├── examples/          # 4 份照抄的原始描述 + cases.json(来源说明)
+│   └── out/           # 对应的 CLI 实跑输出
+├── tests/
+│   ├── test_chongji.py      # 35 个单测:本地规则
+│   └── test_integration.py  # 20 个集成:HTTP 真起服务、CLI 子进程、模型层
+├── docs/regression-map.md   # issue → 测试名对照
 └── assets/demo.gif
 ```
 
@@ -179,11 +201,16 @@ chongji/
 python -m unittest discover tests -v
 ```
 
-35 个单测只测本地逻辑:物种与体重单位、三种月龄写法、六阶段、RER/DER、干湿粮克数差、体重涨跌、红旗/琥珀/绿灯、疫苗日期、清单、离线全流程、单位剥离。CI 在 3.10/3.11/3.12 上跑。
+两层共 55 个:
+
+- **单测(35 个)** 只测本地逻辑:物种与体重单位、月龄写法、六阶段、RER/DER、干湿粮克数差、体重涨跌、红旗/琥珀/绿灯、疫苗日期、清单、离线全流程、单位剥离。
+- **集成(20 个)** 是这一版补的:真起 `ThreadingHTTPServer` 打 HTTP、用子进程跑 `python -m chongji`、按本仓自己的 `summary / care_tips / risks` schema 断模型层。其中 8 条专门钉住修过的四个 bug,对照表见 [docs/regression-map.md](docs/regression-map.md)。
+
+CI 在 3.10/3.11/3.12 上跑,ruff 与覆盖率一起;打 `v*` tag 时追加 docker job 推 GHCR 镜像。
 
 ## 👤 作者
 
-shiyi · GitHub [@wushiyi105-jpg](https://github.com/wushiyi105-jpg) · [wushiyi105@gmail.com](mailto:wushiyi105@gmail.com)
+小米 · 17612850106
 
 ## 📄 License
 

@@ -11,3 +11,12 @@
 - 就诊清单 6 项：体重、时间线、食欲饮水、排便排尿、用药疫苗、既往病史
 - 只做分流与提醒，红旗建议就医，不给处方药；克数与卡路里只认本地
 - Web 单页 + CLI 双入口，无 key 走离线模式
+- `examples/`：4 份照抄未改的真实描述（养猫群提问、问诊口述、复诊微信、值班电话）+ 对应 CLI 实跑输出 + `cases.json` 标注来源
+- 测试 35 → 55：新增 `tests/test_integration.py`（20 条，真起 HTTP 服务 6 条、规则层 8 条、CLI 子进程 6 条）
+- 修 #6：「2岁3个月」被算成 3 个月，阶段判成幼年、喂食量多算 88%；改为先认岁再叠加月，单写岁/单写月的写法保持不变
+- 修 #7：「上次 14.6kg,今天 13.4kg」当下体重被取成上次值，8.2% 掉秤报成 0.0%；「上次」只作趋势基准，只给上次体重时不再假装有趋势
+- 修 #8：同一份输出正文 119 g、公式 118 g；克数只从同一个变量出，公式不再截断
+- 修 #9：「偶尔吐毛球」判成「无明确症状」；吐毛球/毛球进「先观察」，吐血仍是立即就医
+- CI 增加 docker job：打 `v*` tag 推 `ghcr.io/wushiyi105-jpg/chongji`（amd64 + arm64），job 级 `packages: write`
+- `Dockerfile` 补 `org.opencontainers.image.source` / `description` label
+- 新增 `docs/regression-map.md`：每个 issue 对应到具体测试名

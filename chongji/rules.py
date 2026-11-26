@@ -10,7 +10,7 @@ KG_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(kg|公斤|千克)", re.I)
 JIN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*斤")
 AGE_M_RE = re.compile(r"(\d+)\s*个?月")
 AGE_Y_RE = re.compile(r"(\d+(?:\.\d+)?)\s*岁")
-PREV_RE = re.compile(r"上次\s*(\d+(?:\.\d+)?)\s*(kg|公斤|斤)")
+PREV_RE = re.compile(r"上次\s*(\d+(?:\.\d+)?)\s*(kg|公斤|千克|斤)", re.I)
 
 
 def load(name):
@@ -26,23 +26,48 @@ def species(text):
     return None
 
 
+def _strip_prev(text):
+    """把「上次 X kg」从描述里摘出去:那是历史值,不能当成当下的体重。"""
+    t = text or ""
+    m = PREV_RE.search(t)
+    if not m:
+        return t
+    return t[:m.start()] + " " + t[m.end():]
+
+
 def weight_kg(text):
-    m = KG_RE.search(text or "")
+    t = _strip_prev(text)
+    m = KG_RE.search(t)
     if m:
         return float(m.group(1))
-    m = JIN_RE.search(text or "")
+    m = JIN_RE.search(t)
     if m:
         return round(float(m.group(1)) / 2, 2)
     return None
 
 
+def prev_weight(text):
+    m = PREV_RE.search(text or "")
+    if not m:
+        return None
+    v = float(m.group(1))
+    if m.group(2) == "斤":
+        v = round(v / 2, 2)
+    return v
+
+
 def age_months(text):
-    m = AGE_M_RE.search(text or "")
-    if m:
-        return int(m.group(1))
-    m = AGE_Y_RE.search(text or "")
-    if m:
-        return int(float(m.group(1)) * 12)
+    """「2岁3个月」= 27 个月。先认岁,再把后面的月加上,别把 3 个月当成幼犬。"""
+    t = text or ""
+    my = AGE_Y_RE.search(t)
+    mm = AGE_M_RE.search(t)
+    if my:
+        months = int(round(float(my.group(1)) * 12))
+        if mm and mm.start() >= my.end():
+            months += int(mm.group(1))
+        return months
+    if mm:
+        return int(mm.group(1))
     return None
 
 
@@ -74,13 +99,14 @@ def food_plan(bw, st, food_key="dry"):
     d = der(r, st["factor"])
     food = [f for f in load("species.json")["foods"] if f["key"] == food_key][0]
     grams = d / (food["kcal_per_100g"] / 100)
-    per_meal = grams / st["meals"]
+    grams_show = round(grams)
+    per_meal = round(grams / st["meals"])
     return {"rer": round(r, 1), "der": round(d, 1), "food": food["name"],
-            "kcal_per_100g": food["kcal_per_100g"], "grams": round(grams),
-            "meals": st["meals"], "per_meal": round(per_meal),
+            "kcal_per_100g": food["kcal_per_100g"], "grams": grams_show,
+            "meals": st["meals"], "per_meal": per_meal,
             "formula": "RER = 70 × %.2f^0.75 = %.1f kcal;DER = RER × %.1f = %.1f kcal;"
                        "克数 = DER ÷ (%.0f kcal/100g) = %d g" % (bw, r, st["factor"], d,
-                                                                 food["kcal_per_100g"], grams)}
+                                                                 food["kcal_per_100g"], grams_show)}
 
 
 def weight_trend(text, bw):
@@ -162,7 +188,8 @@ def vet_checklist(text):
 
 def analyze(text, today=None):
     sp = species(text)
-    bw = weight_kg(text)
+    cur = weight_kg(text)
+    bw = cur
     months = age_months(text)
     neutered = "绝育" in (text or "")
     diet = "减肥" in (text or "") or "减重" in (text or "")
@@ -170,10 +197,15 @@ def analyze(text, today=None):
     if sp is None:
         notes.append("没识别到猫/狗,按狗估算;补一句「猫」或「狗」更准")
     if bw is None:
-        notes.append("没写体重,算不出喂食量;补「8.5kg」或「12斤」")
+        pw = prev_weight(text)
+        if pw is None:
+            notes.append("没写体重,算不出喂食量;补「8.5kg」或「12斤」")
+        else:
+            bw = pw
+            notes.append("只给了上次体重,先按这个算;当下再称一次,趋势才有意义")
     st = stage(sp, months, neutered, diet)
     plan = food_plan(bw, st) if bw else None
-    trend = weight_trend(text, bw)
+    trend = weight_trend(text, bw) if cur is not None else None
     tri = triage(text)
     return {"species": sp, "weight": bw, "months": months, "neutered": neutered,
             "stage": st, "plan": plan, "trend": trend, "triage": tri,
