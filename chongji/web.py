@@ -13,7 +13,7 @@ PAGE = """<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>宠记 · 宠物照护</title>
+<title>宠记 · 下一件事</title>
 <style>
   :root{--bg:#fdf8f3;--card:#fff;--ink:#2b2520;--muted:#7d7268;--accent:#b5651d;--soft:#fbe9d7;
         --line:#efe3d6;--red:#b3261e;--green:#386641;--amber:#a15c00;--radius:16px}
@@ -39,14 +39,68 @@ PAGE = """<!doctype html>
   .ok{color:var(--green)}.bad{color:var(--red)}.warn{color:var(--amber)}
   .level{display:inline-block;padding:4px 12px;border-radius:999px;font-size:13px}
   ul{margin:6px 0 0 18px;padding:0}li{margin:6px 0;font-size:14px}
+
+.prod{display:block;font-size:11px;line-height:1.4;letter-spacing:.18em;font-weight:650;margin-bottom:8px;opacity:.72}
+.lede{max-width:62ch;line-height:1.75}
+.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:0 0 20px;border:1px solid var(--line);background:var(--line)}
+.route span{padding:11px 13px;background:var(--card);font-size:12px;line-height:1.5}
+.route b{display:block;font-size:10px;letter-spacing:.1em;margin-bottom:3px;opacity:.66}
+button{min-height:46px}
+input,select{min-height:44px}
+@media(max-width:680px){
+  .wrap{padding:20px 16px 56px}
+  .route{grid-template-columns:1fr}
+  header h1{font-size:30px!important}
+  .row>div{min-width:100%!important}
+  button{width:100%}
+}
+
+body{background:#f8efe2;color:#4b2b26;font-family:"PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:900px}
+header{padding:8px 0 22px;border-bottom:1px dashed #a64b3c;margin-bottom:20px}
+header h1{font-family:"Songti SC","SimSun",Georgia,serif;font-size:38px;line-height:1.24}
+header p{color:#7c6157;font-size:14px}
+.card{background:#fffaf3;border:1px solid #dfc7b0;border-radius:12px 12px 4px 4px;box-shadow:none}
+button{background:#a64b3c;border-radius:4px;letter-spacing:.05em}
+button:hover{background:#8f3e31}
+textarea,input,select{background:#fffdf8;border-color:#dcc2aa;border-radius:4px}
+textarea:focus,input:focus,select:focus{border-color:#a64b3c;box-shadow:0 0 0 2px #edd9d1}
+.item{border-left:3px solid #a64b3c}
+h3{color:#8f3e31;letter-spacing:.08em}
+
+
+/* palette-normalized */
+:root{--bg:#f8efe2;--card:#fffaf3;--ink:#4b2b26;--text:#4b2b26;--dim:#7c6157;--line:#dfc7b0;--accent:#a64b3c}
+
+/* polish-batch1 */
+button.ghost,button.secondary{background:transparent!important;color:#a64b3c!important;border:1px solid #dfc7b0!important}
+
+/* mobile-32 */
+
+@media(max-width:760px){
+  main{grid-template-columns:1fr!important}
+  aside{border-right:0!important;border-bottom:1px solid #dfc7b0;width:auto!important}
+  section{padding:16px!important}
+  .row{flex-wrap:wrap!important}
+  .row>div{min-width:100%!important}
+  h1{font-size:30px!important}
+  .route{grid-template-columns:1fr!important}
+  button{min-height:48px}
+  pre{overflow-x:auto}
+}
+
+/* mobile-height */
+@media(max-width:760px){main{min-height:auto!important}aside{min-height:0!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>宠记 · 宠物照护<span class="badge" id="badge">…</span></h1>
-    <p>告诉我是猫还是狗、多重、多大、哪里不对,给你每日喂食量、免疫日历和症状分级。</p>
+    <h1><span class="prod">宠记</span>下一件事，别错过 <span class="badge" id="badge">…</span></h1>
+    <p class="lede">给多宠或多人照护的家庭：把体重、疫苗、驱虫和观察记录归到每只宠，切宠后名字、照片和记录一起切换。</p>
   </header>
+  <div class="route" aria-label="任务步骤"><span><b>01</b>先选对宠物</span><span><b>02</b>记下这次观察</span><span><b>03</b>带走就诊近况</span></div>
+
   <div class="card">
     <label>宠物情况</label>
     <textarea id="text" rows="6" placeholder="猫,4.2kg,2岁,已绝育,今天吐了两次,精神还行,上次 4.5kg"></textarea>
